@@ -57,6 +57,7 @@ public class FormActivity extends AppCompatActivity {
                 }
 
                 if (validate) {
+                    validate = false;
                     Intent intent = new Intent(FormActivity.this, UserPageActivity.class);
                     startActivity(intent);
                 } else {
