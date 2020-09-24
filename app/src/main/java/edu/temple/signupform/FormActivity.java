@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class FormActivity extends AppCompatActivity {
 
@@ -19,7 +20,21 @@ public class FormActivity extends AppCompatActivity {
     EditText password;
     boolean validate = false;
 
-    ArrayList[][] users = new ArrayList[10][2];
+    ArrayList<String> emailList = new ArrayList<String>();
+    ArrayList<String> passwordList = new ArrayList<String>();
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == SignUpActivity.RESULT_OK) {
+            if (Objects.requireNonNull(data.getExtras()).containsKey("email")) {
+                emailList.add(data.getStringExtra("email"));
+            }
+            if (Objects.requireNonNull(data.getExtras()).containsKey("password")) {
+                passwordList.add(data.getStringExtra("password"));
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +47,16 @@ public class FormActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.login);
 
 
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < users.length; i++) {
-                    if (email.getText().toString().equals(users[i][0].toString()) && password.getText().toString().equals(users[i][1].toString())) {
-                            validate = true;
+                for (int i = 0; i < emailList.size(); i++) {
+                    if (email.getText().toString().equals(emailList.get(i).toString()) && password.getText().toString().equals(passwordList.get(i).toString())) {
+                        validate = true;
                     }
                 }
 
-                if(validate){
+                if (validate) {
                     Intent intent = new Intent(FormActivity.this, UserPageActivity.class);
                     startActivity(intent);
                 } else {
@@ -57,7 +71,7 @@ public class FormActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FormActivity.this, SignUpActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 2);
             }
         });
 
